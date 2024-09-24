@@ -1,0 +1,38 @@
+datasource db {
+  provider = "mysql"
+  url      = "mysql://root:teste@localhost:3306/chaves_db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Proprietario {
+  id        Int    @id @default(autoincrement())
+  nome      String @db.VarChar(255)
+  telefone  String @db.VarChar(20)
+  Chave     Chave[]
+}
+
+model Chave {
+  id              Int         @id @default(autoincrement())
+  pino            String      @db.VarChar(50)
+  codigoImovel    String      @db.VarChar(50)
+  logradouro      String      @db.VarChar(255)
+  numero          String      @db.VarChar(10)
+  condominio      String?     @db.VarChar(255)
+  nrcondominio    String?     @db.VarChar(255)
+  proprietarioId  Int
+  status          Boolean     @default(false)
+  Proprietario    Proprietario @relation(fields: [proprietarioId], references: [id])
+  Retirada        Retirada[]
+}
+
+model Retirada {
+  id        Int    @id @default(autoincrement())
+  chaveId   Int
+  nome      String @db.VarChar(255)
+  telefone  String @db.VarChar(20)
+  detalhes  String?
+  Chave     Chave  @relation(fields: [chaveId], references: [id])
+}
